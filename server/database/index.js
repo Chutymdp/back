@@ -57,4 +57,27 @@ con.cv = (val) => {
     });
 };
 
+con.cv_select = (id) => {
+    return new Promise((resolve, reject) => {
+        pool.query('SELECT * FROM cv WHERE id_cva = ?', [id] , (err,results) => {
+            if(err){
+                return reject(err);
+            }
+            return resolve(results[0]);
+        });
+            
+    });
+};
+
+con.geo = (val) => {
+    return new Promise((resolve, reject ) => {
+        pool.query('SELECT CONCAT(c_estado, "-", c_mnpio, "-", d_codigo) as C_CP, d_estado, D_mnpio, d_codigo FROM cp_mex WHERE d_codigo = ?', [val.cp], (err,results) => {
+            if(err){
+                return reject(err);
+            }
+            return resolve(results[0]);
+        });
+    });
+};
+
 module.exports = con;
