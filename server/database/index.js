@@ -57,4 +57,16 @@ con.cv = (val) => {
     });
 };
 
+con.cv_select = (id) => {
+    return new Promise((resolve, reject) => {
+        pool.query('SELECT * FROM cv WHERE id_cva = ?', [id] , (err,results) => {
+            if(err){
+                return reject(err);
+            }
+            return resolve(results[0]);
+        });
+            
+    });
+};
+
 module.exports = con;

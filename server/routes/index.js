@@ -1,3 +1,4 @@
+
 const express = require('express');
 const db = require ('../database');
 const router = express.Router();
@@ -41,6 +42,16 @@ router.post('/CV', async(req, res, next) => {
         console.log(e);
         res.sendStatus(500);
     }
-})
+});
+
+router.get('/CV/:id', async(req, res, next) => {
+    try{
+        let results = await db.cv_select(req.params.id);
+        res.json(results);
+    }catch(e) {
+        console.log(e);
+        res.sendStatus(500);
+    }
+});
 
 module.exports = router;    
