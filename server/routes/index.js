@@ -54,4 +54,14 @@ router.get('/CV/:id', async(req, res, next) => {
     }
 });
 
+router.post('/GEO', async(req, res, next) => {
+    try{
+        let results = await db.geo(req.body);
+        res.json(results);
+    }catch(e) {
+        console.log(e);
+        res.sendStatus(500);
+    }
+});
+
 module.exports = router;    

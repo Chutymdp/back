@@ -69,4 +69,15 @@ con.cv_select = (id) => {
     });
 };
 
+con.geo = (val) => {
+    return new Promise((resolve, reject ) => {
+        pool.query('SELECT CONCAT(c_estado, "-", c_mnpio, "-", d_codigo) as C_CP, d_estado, D_mnpio, d_codigo FROM cp_mex WHERE d_codigo = ?', [val.cp], (err,results) => {
+            if(err){
+                return reject(err);
+            }
+            return resolve(results[0]);
+        });
+    });
+};
+
 module.exports = con;
