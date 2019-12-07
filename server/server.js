@@ -1,9 +1,10 @@
 const express = require('express');
 const session = require('express-session');
 const ApiRouter = require('./routes');
+const Cors = require('cors');
 
 const app = express();
-
+app.use(Cors());
 // Middleware
 app.use(express.json());
 
