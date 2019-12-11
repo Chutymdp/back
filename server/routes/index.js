@@ -56,9 +56,7 @@ router.get('/CV/:id', async(req, res, next) => {
 
 router.post('/CP', async(req, res, next) => {
     try{
-       
-        let results = await db.geo(req.body.params);
-        
+        let results = await db.geo(req.body.params); 
         res.json(results);
     }catch(e) {
         console.log(e);
