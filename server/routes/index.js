@@ -27,14 +27,14 @@ router.post('/login', async (req, res, next) => {
 router.post('/registro', async (req, res, next) => {
     try{
         let results = await db.registro(req.body);
-        res.json(results);
+        res.json({id:'true'});
     }catch (e) {
         console.log(e);
         res.sendStatus(500);
     }
 });
 
-router.post('/CV', async(req, res, next) => {
+router.post('/registroCV', async(req, res, next) => {
     try{
         let results = await db.cv(req.body);
         res.json(results);
@@ -54,9 +54,11 @@ router.get('/CV/:id', async(req, res, next) => {
     }
 });
 
-router.post('/GEO', async(req, res, next) => {
+router.post('/CP', async(req, res, next) => {
     try{
-        let results = await db.geo(req.body);
+       
+        let results = await db.geo(req.body.params);
+        
         res.json(results);
     }catch(e) {
         console.log(e);
