@@ -2,6 +2,7 @@
 const express = require('express');
 const db = require ('../database');
 const router = express.Router();
+const jwt = require('jsonwebtoken');
 
 router.get('/trabajos', async (req,res,next) =>{
     try{
@@ -17,12 +18,21 @@ router.get('/trabajos', async (req,res,next) =>{
 router.post('/login', async (req, res, next) => {
     try{
         let results = await db.login(req.body);
-        res.json(results);
     }catch (e) {
         console.log(e);
         res.sendStatus(500);
     }
 });
+
+
+function ensureToken(req, res, next){
+    const bearerHeader = req.headers['Authorization'];
+    console.log(bearerHeader);
+    if(typeof bearerHeader !== 'undefined')
+    {
+        const bearer = bearerHeader.split(" ");
+    }
+};
 
 router.post('/registro', async (req, res, next) => {
     try{

@@ -9,8 +9,6 @@ const pool = mysql.createPool({
     port: '3306'
 });
 
-let con = {};
-
 con.trabajos = () => {
     return new Promise((resolve, reject) => {
         pool.query('SELECT * FROM usuarios', (err,results) => {
