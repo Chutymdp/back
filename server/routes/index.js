@@ -31,7 +31,7 @@ router.post('/login', async (req, res, next) =>{
     {
         return res.status(404).send("The email doesn't exist");
     }
-        //NO FUNCIONA
+        //NO FUNCIONA .
        //const passIsValid = await user.validatePassword(req.body.pass, req.body.correo); - Utiliza la contraseña del formulario y la compara con la hash
        //console.log(passIsValid); - Muestra si la contraseña fue comprada con éxito o no
 
