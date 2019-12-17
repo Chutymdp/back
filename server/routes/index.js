@@ -14,71 +14,40 @@ router.get('/trabajos', async (req,res,next) =>{
     }
 });
 
-//LOGIN ORIGINAL
-// router.post('/login', async (req, res, next) => {
-//     try{
-//         let results = await db.login(req.body);
-//     }catch (e) {
-//         console.log(e);
-//         res.sendStatus(500);
-//     }
-// });
-
-//Página de prueba donde se valida que tienes un token - Medio funciona / La haré funcionar cuando a la puta función que está debajo se le ocurra comparar los correos >:v
-router.get('/me', async (req, res, next) =>{
-    const token = req.headers['x-access-token'];
-    if (!token) {
-        return res.status(401).json({
-            auth: false,
-            message: 'no token provided'
-        }); 
-    }
-    const decoded = jwt.verify(token, 'mysecretkey');
-    const user = await db.login(decoded.user);
+//Página de prueba donde se valida que tienes un token - Funciona
+router.get('/me', verifyToken, async (req, res, next) =>{
+    const user = await db.getEmail(req.user);
     if(!user){
         return res.status(404).send('No user found');
     }
-    console.log(decoded);
+    res.json('me');
 
 });
     
-//LOGIN DE PRUEBA - No he logrado que la base de datos compare los correos. (Si se llegan a comparar los correos, significa que existe el usuario en la base de datos) PD:No pude lograr obtener el ID por eso lo hago con correo, después se podría modificar para intentarlo con ID
+//LOGIN -
 router.post('/login', async (req, res, next) =>{
-    const {correo, pass} = req.body;
-    console.log(req.body.correo);
-    const user = await db.getEmail(req.body.correo);
-    console.log(user, 'puto no te sale aún'); //Hasta aquí llega.
-    if (!user){
+    let user = await db.login(req.body.correo, req.body.pass);
+    if (!user)
+    {
         return res.status(404).send("The email doesn't exist");
     }
-    //Código que debería validar al contraseña normal con la hash (encriptada).
-       const passIsValid = await user.validatePassword(req.body);
-       console.log(passIsValid);
-       res.json('ingresó con éxito');
- 
+        //NO FUNCIONA .
+       //const passIsValid = await user.validatePassword(req.body.pass, req.body.correo); - Utiliza la contraseña del formulario y la compara con la hash
+       //console.log(passIsValid); - Muestra si la contraseña fue comprada con éxito o no
+
+       const token = jwt.sign({user: req.body.correo}, 'mysecretkey',{ expiresIn: 60*60*24})    //Crea un token a partir del correo electrónico
+       res.json({auth: true, token});   //Muestra la autorización y si el token es correcto
 });
 
-
-//REGISTRO ORIGINAL
-// router.post('/registro', async (req, res, next) => {
-//     try{
-//         let results = await db.registro(req.body);
-//         res.json({id:'true'});
-//     }catch (e) {
-//         console.log(e);
-//         res.sendStatus(500);
-//     }
-// });
-
-//REGISTRO DE PRUEBA - FUNCIONANDO
+//REGISTRO
 router.post('/registro', async (req, res, next) => {
     try{
-        const{nombre, apellido_p, apellido_m, correo, pass} = req.body;
+        const{nombre, apellido_p, apellido_m, pass} = req.body;
         req.body.pass = await encryptPassword(req.body.pass);
         console.log (req.body);
         //res.json({message: 'recibido'});
         let results = await db.registro(req.body);
-        const token = jwt.sign({user: req.body.pass}, 'mysecretkey',{ expiresIn: 60*60*24})
+        const token = jwt.sign({user: req.body.correo}, 'mysecretkey',{ expiresIn: 60*60*24})
         res.json({auth: true, token});
     }catch (e) {
         console.log(e);
@@ -123,9 +92,24 @@ async function encryptPassword(pass) {
     const salt = await bcrypt.genSalt(10);
     return bcrypt.hash(pass, salt);
 }
-//FUNCIÓN QUE VALIDA LA CONTRASEÑA - NO HE PODIDO PROBARLO BIEN
-async function validatePassword(pass, correo ){
+//FUNCIÓN QUE VALIDA LA CONTRASEÑA - NO FUNCIONA
+async function validatePassword(pass, correo){
    return bcrypt.compare(pass, db.getPassword(correo));
+}
+
+//FUNCIÓN QUE VERIFICA EL TOKEN EN CADA RUTA
+function verifyToken (req, res, next){
+    const token = req.headers['x-access-token'];
+    if (!token) {
+        return res.status(401).json({
+            auth: false,
+            message: 'no token provided'
+        }); 
+    }
+    const decoded = jwt.verify(token, 'mysecretkey');
+    //console.log(decoded);
+    req.user=decoded.user;
+    next();
 }
 
 module.exports = router;    
