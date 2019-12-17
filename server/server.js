@@ -2,11 +2,15 @@ const express = require('express');
 const session = require('express-session');
 const ApiRouter = require('./routes');
 const Cors = require('cors');
+const passport = require('passport');
 
 const app = express();
 app.use(Cors());
 // Middleware
 app.use(express.json());
+app.use(express.urlencoded({extended: false}));
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Rutas
 app.use('/api', ApiRouter);
