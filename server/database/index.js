@@ -69,6 +69,28 @@ con.getEmail = (Correo) => {
         });
     });
 };
+
+con.getID = (Correo) => {
+    return new Promise((resolve, reject ) => {
+        pool.query('SELECT id_usuario FROM usuarios WHERE Correo_electronico = ?', [Correo], (err,results) => {
+            if(err){
+                return reject(err);
+            }
+            return resolve(results[0]);
+        });
+    });
+};
+
+con.confirmID = (id) => {
+    return new Promise((resolve, reject ) => {
+        pool.query('SELECT id_usuario FROM usuarios WHERE id_usuario = ?', [id], (err,results) => {
+            if(err){
+                return reject(err);
+            }
+            return resolve(results);
+        });
+    });
+};
    
 //CONSULTA DE REGISTRO DE USUARIOS SQL
 con.registro = (val) => {
