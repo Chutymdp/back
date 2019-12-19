@@ -16,9 +16,9 @@ router.get('/trabajos', async (req,res,next) =>{
 
 //Página de prueba donde se valida que tienes un token - Funciona
 router.get('/me', verifyToken, async (req, res, next) =>{
-    console.log(req.user, 'antes');
+    //console.log(req.user, 'antes');
     let user = await db.confirmID(req.user);
-    console.log(user);
+    //console.log(user);
     if(!user){
         return res.status(404).send('No user found');
         
@@ -116,7 +116,7 @@ function verifyToken (req, res, next){
     const decoded = jwt.verify(token, 'mysecretkey');
     //console.log(decoded);
     req.user=decoded.user;
-    console.log(req.user);
+    //console.log(req.user);
     next();
 }
 
