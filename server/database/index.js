@@ -40,6 +40,7 @@ con.login = (Correo, Contraseña) => {
             if(err){
                 return reject(err);
             }
+            console.log(results);
             return resolve(results[0]);
         });
     });
@@ -56,7 +57,6 @@ con.getPassword = (Correo) => {
         });
     });
 };
-
 
 //Query que compara el email del formulario con el email de la base de datos - PD: la hija de perra no quiere hacerlo.
 con.getEmail = (Correo) => {
@@ -115,6 +115,7 @@ con.cv = (val) => {
         });     
     });
 };
+
 
 //CONSULTA DE BUSQUEDA POR "ID" DE CURRICULUM SQL
 con.cv_select = (id) => {

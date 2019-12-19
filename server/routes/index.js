@@ -1,17 +1,17 @@
-const express = require('express');
-const db = require ('../database');
+const express = require("express");
+const db = require("../database");
 const router = express.Router();
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
 
-router.get('/trabajos', async (req,res,next) =>{
-    try{
-        let results = await db.trabajos();
-        res.json(results);      
-     }catch(e) {
-        console.log(e);
-        res.sendStatus(500);
-    }
+router.get("/trabajos", async (req, res, next) => {
+  try {
+    let results = await db.trabajos();
+    res.json(results);
+  } catch (e) {
+    console.log(e);
+    res.sendStatus(500);
+  }
 });
 
 //Página de prueba donde se valida que tienes un token - Funciona
@@ -40,8 +40,11 @@ router.post('/login', async (req, res, next) =>{
        //const passIsValid = await user.validatePassword(req.body.pass, req.body.correo); - Utiliza la contraseña del formulario y la compara con la hash
        //console.log(passIsValid); - Muestra si la contraseña fue comprada con éxito o no
 
-       const token = jwt.sign({user: id}, 'mysecretkey',{ expiresIn: 60*60*24})    //Crea un token a partir del correo electrónico
-       res.json({auth: true, token});   //Muestra la autorización y si el token es correcto
+       const token = jwt.sign({user: id}, 'mysecretkey',{ expiresIn: 60})    //Crea un token a partir del correo electrónico
+       res.json({auth: true, token});//Muestra la autorización y si el token es correcto
+       console.log(token);
+       
+       
 });
 
 //REGISTRO
@@ -61,47 +64,47 @@ router.post('/registro', async (req, res, next) => {
     }
 
 });
- 
+
 //REGISTRO DE CURRICULUM
-router.post('/registroCV', async(req, res, next) => {
-    try{
-        let results = await db.cv(req.body);
-        res.json(results);
-    }catch(e) {
-        console.log(e);
-        res.sendStatus(500);
-    }
+router.post("/registroCV", async (req, res, next) => {
+  try {
+    let results = await db.cv(req.body);
+    res.json(results);
+  } catch (e) {
+    console.log(e);
+    res.sendStatus(500);
+  }
 });
 
 //SELECCIÓN DE CURRICULUM A TRAVÉS DEL ID
-router.get('/CV/:id', async(req, res, next) => {
-    try{
-        let results = await db.cv_select(req.params.id);
-        res.json(results);
-    }catch(e) {
-        console.log(e);
-        res.sendStatus(500);
-    }
+router.get("/CV/:id", async (req, res, next) => {
+  try {
+    let results = await db.cv_select(req.params.id);
+    res.json(results);
+  } catch (e) {
+    console.log(e);
+    res.sendStatus(500);
+  }
 });
 
-router.post('/CP', async(req, res, next) => {
-    try{
-        let results = await db.geo(req.body.params); 
-        res.json(results);
-    }catch(e) {
-        console.log(e);
-        res.sendStatus(500);
-    }
+router.post("/CP", async (req, res, next) => {
+  try {
+    let results = await db.geo(req.body.params);
+    res.json(results);
+  } catch (e) {
+    console.log(e);
+    res.sendStatus(500);
+  }
 });
 
 //FUNCIÓN QUE ENCRIPTA LA CONTRASEÑA - FUNCIONA
 async function encryptPassword(pass) {
-    const salt = await bcrypt.genSalt(10);
-    return bcrypt.hash(pass, salt);
+  const salt = await bcrypt.genSalt(10);
+  return bcrypt.hash(pass, salt);
 }
 //FUNCIÓN QUE VALIDA LA CONTRASEÑA - NO FUNCIONA
-async function validatePassword(pass, correo){
-   return bcrypt.compare(pass, db.getPassword(correo));
+async function validatePassword(pass, correo) {
+  return bcrypt.compare(pass, db.getPassword(correo));
 }
 
 //FUNCIÓN QUE VERIFICA EL TOKEN EN CADA RUTA
@@ -120,4 +123,4 @@ function verifyToken (req, res, next){
     next();
 }
 
-module.exports = router;    
+module.exports = router;
