@@ -16,17 +16,22 @@ router.get('/trabajos', async (req,res,next) =>{
 
 //Página de prueba donde se valida que tienes un token - Funciona
 router.get('/me', verifyToken, async (req, res, next) =>{
-    const user = await db.getEmail(req.user);
+    console.log(req.user, 'antes');
+    let user = await db.confirmID(req.user);
+    console.log(user);
     if(!user){
         return res.status(404).send('No user found');
+        
     }
     res.json('me');
-
+    
 });
     
 //LOGIN -
 router.post('/login', async (req, res, next) =>{
     let user = await db.login(req.body.correo, req.body.pass);
+    let id = await db.getID(req.body.correo);
+    console.log(id);
     if (!user)
     {
         return res.status(404).send("The email doesn't exist");
@@ -35,24 +40,26 @@ router.post('/login', async (req, res, next) =>{
        //const passIsValid = await user.validatePassword(req.body.pass, req.body.correo); - Utiliza la contraseña del formulario y la compara con la hash
        //console.log(passIsValid); - Muestra si la contraseña fue comprada con éxito o no
 
-       const token = jwt.sign({user: req.body.correo}, 'mysecretkey',{ expiresIn: 60*60*24})    //Crea un token a partir del correo electrónico
+       const token = jwt.sign({user: id}, 'mysecretkey',{ expiresIn: 60*60*24})    //Crea un token a partir del correo electrónico
        res.json({auth: true, token});   //Muestra la autorización y si el token es correcto
 });
 
 //REGISTRO
 router.post('/registro', async (req, res, next) => {
     try{
-        const{nombre, apellido_p, apellido_m, pass} = req.body;
-        req.body.pass = await encryptPassword(req.body.pass);
+        const{nombre, apellido_p, apellido_m, correo, pass} = req.body;
+        //req.body.pass = await encryptPassword(req.body.pass);
         console.log (req.body);
         //res.json({message: 'recibido'});
         let results = await db.registro(req.body);
-        const token = jwt.sign({user: req.body.correo}, 'mysecretkey',{ expiresIn: 60*60*24})
+        let id = await db.getID(req.body.correo);
+        const token = jwt.sign({user: id}, 'mysecretkey',{ expiresIn: 60*60*24})
         res.json({auth: true, token});
     }catch (e) {
         console.log(e);
         res.sendStatus(500);
     }
+
 });
  
 //REGISTRO DE CURRICULUM
@@ -109,6 +116,7 @@ function verifyToken (req, res, next){
     const decoded = jwt.verify(token, 'mysecretkey');
     //console.log(decoded);
     req.user=decoded.user;
+    console.log(req.user);
     next();
 }
 
