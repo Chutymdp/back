@@ -1,8 +1,8 @@
 const express = require('express');
 const db = require('../database');
 const router = express.Router();
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
 
 router.get('/trabajos', async (req, res, next) => {
     try {
@@ -19,6 +19,7 @@ router.get('/me', verifyToken, async (req, res, next) => {
     const user = await db.getEmail(req.user);
     if (!user) {
         return res.status(404).send('No user found');
+        
     }
     res.json('me');
     console.log("ewewew");
@@ -75,6 +76,7 @@ router.post('/registro', async (req, res, next) => {
         console.log(e);
         res.sendStatus(500);
     }
+
 });
 
 //REGISTRO DE CURRICULUM
@@ -111,8 +113,8 @@ router.post('/CP', async (req, res, next) => {
 
 //FUNCIÓN QUE ENCRIPTA LA CONTRASEÑA - FUNCIONA
 async function encryptPassword(pass) {
-    const salt = await bcrypt.genSalt(10);
-    return bcrypt.hash(pass, salt);
+  const salt = await bcrypt.genSalt(10);
+  return bcrypt.hash(pass, salt);
 }
 //FUNCIÓN QUE VALIDA LA CONTRASEÑA - NO FUNCIONA
 async function validatePassword(pass, correo) {
