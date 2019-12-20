@@ -45,6 +45,17 @@ con.login = (Correo, Contraseña) => {
     });
 };
 
+con.getID = (Correo) => {
+    return new Promise((resolve, reject ) => {
+        pool.query('SELECT id_usuario FROM usuarios WHERE Correo_electronico = ?', [Correo], (err,results) => {
+            if(err){
+                return reject(err);
+            }
+            return resolve(results[0]);
+        });
+    });
+};
+
 //Query que obtiene la contraseña a través del correo electrónico - Aun no he podido hacerla funcionar.
 con.getPassword = (Correo) => {
     return new Promise((resolve, reject ) => {
