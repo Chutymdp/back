@@ -54,9 +54,109 @@ router.post('/registroCV', async(req, res, next) => {
     }
 });
 
+router.post('/registroUbic', async(req, res, next) => {
+    try{
+        let results = await db.ubc(req.body);
+        res.json(results);
+    }catch(e) {
+        console.log(e);
+        res.sendStatus(500);
+    }
+});
+
+router.post('/registroSocial', async(req, res, next) => {
+    try{
+        let results = await db.redsc(req.body);
+        res.json(results);
+    }catch(e) {
+        console.log(e);
+        res.sendStatus(500);
+    }
+});
+
+router.post('/registroCursos', async(req, res, next) => {
+    try{
+        let results = await db.cursos(req.body);
+        res.json(results);
+    }catch(e) {
+        console.log(e);
+        res.sendStatus(500);
+    }
+});
+
+router.post('/registroIdiomas', async(req, res, next) => {
+    try{
+        let results = await db.idiomas(req.body);
+        res.json(results);
+    }catch(e) {
+        console.log(e);
+        res.sendStatus(500);
+    }
+});
+
+router.post('/registroExpLaboral', async(req, res, next) => {
+    try{
+        let results = await db.expLaboral(req.body);
+        res.json(results);
+    }catch(e) {
+        console.log(e);
+        res.sendStatus(500);
+    }
+});
+
+router.post('/registroAcademico', async(req, res, next) => {
+    try{
+        let results = await db.formAcad(req.body);
+        res.json(results);
+    }catch(e) {
+        console.log(e);
+        res.sendStatus(500);
+    }
+});
+
+router.post('/CompetenciaUsr', async(req, res, next) => {
+    try{
+        let results = await db.compUsr(req.body);
+        res.json(results);
+    }catch(e) {
+        console.log(e);
+        res.sendStatus(500);
+    }
+});
+
 router.get('/CV/:id', async(req, res, next) => {
     try{
         let results = await db.cv_select(req.params.id);
+        res.json(results);
+    }catch(e) {
+        console.log(e);
+        res.sendStatus(500);
+    }
+});
+
+router.get('/sector', async(req, res, next) => {
+    try{
+        let results = await db.sector_select(req.params.id);
+        res.json(results);
+    }catch(e) {
+        console.log(e);
+        res.sendStatus(500);
+    }
+});
+
+router.get('/area', async(req, res, next) => {
+    try{
+        let results = await db.area_select(req.params.id);
+        res.json(results);
+    }catch(e) {
+        console.log(e);
+        res.sendStatus(500);
+    }
+});
+
+router.get('/habilidad', async(req, res, next) => {
+    try{
+        let results = await db.habilidad_select(req.params.id);
         res.json(results);
     }catch(e) {
         console.log(e);

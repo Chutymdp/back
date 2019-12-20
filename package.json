@@ -19,6 +19,5 @@
   },
   "devDependencies": {
     "nodemon": "^2.0.1"
-    //N00b here
   }
 }
