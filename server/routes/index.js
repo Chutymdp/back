@@ -28,7 +28,7 @@ router.get('/me', verifyToken, async (req, res, next) => {
 });
 
 //LOGIN -
-router.post('/login',verifyToken, async (req, res, next) => {
+router.post('/login', async (req, res, next) => {
     let id = await db.getID(req.body.correo);
     let user = await db.login(req.body.correo, req.body.pass);
     
@@ -37,25 +37,24 @@ router.post('/login',verifyToken, async (req, res, next) => {
     } else {
         
         const token = jwt.sign({user: id}, 'mysecretkey',{ expiresIn: 60*60*24})     //Crea un token a partir del correo electrónico
-        res.json({ auth: true, token });//Muestra la autorización y si el token es correcto
+        //res.json({ auth: true, token });//Muestra la autorización y si el token es correcto
         console.log(token);
-        let tok = verifyToken(token).user
-        console.log(tok);
-        
-        
+        let tok = verifyToken(token)
+        res.send(token)
     }
 });
 
 
 //FUNCIÓN QUE VERIFICA EL TOKEN EN CADA RUTA
-function verifyToken(req, res, next) {
-    const token = req.headers['x-access-token'];
-    if (!token) {
-        return res.status(401).json({
-            auth: false,
-            message: 'no token provided'
-        });
-    }
+function verifyToken(token) {
+    // Verifica si recibe un token (puede servir más tarde)
+    // const token = req.headers['x-access-token'];
+    // if (!token) { 
+    //     return res.status(401).json({
+    //         auth: false,
+    //         message: 'no token provided'
+    //     });
+    // }
     const tokenVerificado = jwt.verify(token, 'mysecretkey');
     console.log("Verificando" + tokenVerificado);
     
