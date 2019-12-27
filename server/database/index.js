@@ -85,5 +85,302 @@ con.getCP = (val) => {
     });
 };
 
+//Consulta de tabla de detalles de usuario y cv
+con.det_usr_cv = (id) => {
+    return new Promise((resolve, reject) => {
+        pool.query('select * from det_usr_cv where FK_USUARIO = ?', [id] , (err,results) => {
+            if(err){
+                return reject(err);
+            }
+            return resolve(results[0]);
+        });            
+    });
+};
+
+// INSERT A DETALLES Areas
+con.detArea1 = (cv_id) => {
+    return new Promise((resolve, reject ) => {
+        pool.query('INSERT INTO det_areas_usr_cv(fk_areas,fk_usuario,fk_cv) values ((SELECT id_area FROM areas_conocimiento WHERE NOMBRE_AREA =  (select Area_1 from cv where id_cva = ?)),11,?);', [cv_id,cv_id] , (err,results) => {
+            if(err){
+                return reject(err);
+            }
+            return resolve(results[0]);
+        });
+    });
+};
+
+con.detArea2 = (cv_id) => {
+    return new Promise((resolve, reject ) => {
+        pool.query('INSERT INTO det_areas_usr_cv(fk_areas,fk_usuario,fk_cv) values ((SELECT id_area FROM areas_conocimiento WHERE NOMBRE_AREA =  (select Area_2 from cv where id_cva = ?)),11,?);', [cv_id,cv_id] , (err,results) => {
+            if(err){
+                return reject(err);
+            }
+            return resolve(results[0]);
+        });
+    });
+};
+
+con.detArea3 = (cv_id) => {
+    return new Promise((resolve, reject ) => {
+        pool.query('INSERT INTO det_areas_usr_cv(fk_areas,fk_usuario,fk_cv) values ((SELECT id_area FROM areas_conocimiento WHERE NOMBRE_AREA =  (select Area_3 from cv where id_cva = ?)),11,?);', [cv_id,cv_id] , (err,results) => {
+            if(err){
+                return reject(err);
+            }
+            return resolve(results[0]);
+        });
+    });
+};
+
+// INSERT A DETALLES Cursos
+con.detCurso1 = (cv_id) => {
+    return new Promise((resolve, reject ) => {
+        pool.query('INSERT INTO det_curso_Usr_CV(FK_curso,fk_usuario,fk_cv) values ((SELECT id_curso FROM cursos WHERE curso =   (select Curso_Tipo_1 from cv where id_cva = ?)),11,? );', [cv_id,cv_id] , (err,results) => {
+            if(err){
+                return reject(err);
+            }
+            return resolve(results[0]);
+        });
+    });
+};
+
+con.detCurso2 = (cv_id) => {
+    return new Promise((resolve, reject ) => {
+        pool.query('INSERT INTO det_curso_Usr_CV(FK_curso,fk_usuario,fk_cv) values ((SELECT id_curso FROM cursos WHERE curso =   (select Curso_Tipo_2 from cv where id_cva = ?)),11,? );', [cv_id,cv_id] , (err,results) => {
+            if(err){
+                return reject(err);
+            }
+            return resolve(results[0]);
+        });
+    });
+};
+
+con.detCurso3 = (cv_id) => {
+    return new Promise((resolve, reject ) => {
+        pool.query('INSERT INTO det_curso_Usr_CV(FK_curso,fk_usuario,fk_cv) values ((SELECT id_curso FROM cursos WHERE curso =   (select Curso_Tipo_3 from cv where id_cva = ?)),11,? );', [cv_id,cv_id] , (err,results) => {
+            if(err){
+                return reject(err);
+            }
+            return resolve(results[0]);
+        });
+    });
+};
+
+// INSERT A DETALLES HABILIDADES
+con.detHabilidad1 = (cv_id) => {
+    return new Promise((resolve, reject ) => {
+        pool.query('INSERT INTO det_hab_Usr_CV(fk_habilidad,fk_usuario,fk_cv) values ((SELECT id_habilidad FROM habilidades WHERE nombre_habilidad = (select habilidad1 from cv where id_cva = ?)),11,?);', [cv_id,cv_id] , (err,results) => {
+            if(err){
+                return reject(err);
+            }
+            return resolve(results[0]);
+        });
+    });
+};
+
+con.detHabilidad2 = (cv_id) => {
+    return new Promise((resolve, reject ) => {
+        pool.query('INSERT INTO det_hab_Usr_CV(fk_habilidad,fk_usuario,fk_cv) values ((SELECT id_habilidad FROM habilidades WHERE nombre_habilidad = (select habilidad2 from cv where id_cva = ?)),11,?);', [cv_id,cv_id] , (err,results) => {
+            if(err){
+                return reject(err);
+            }
+            return resolve(results[0]);
+        });
+    });
+};
+
+con.detHabilidad3 = (cv_id) => {
+    return new Promise((resolve, reject ) => {
+        pool.query('INSERT INTO det_hab_Usr_CV(fk_habilidad,fk_usuario,fk_cv) values ((SELECT id_habilidad FROM habilidades WHERE nombre_habilidad = (select habilidad3 from cv where id_cva = ?)),11,?);', [cv_id,cv_id] , (err,results) => {
+            if(err){
+                return reject(err);
+            }
+            return resolve(results[0]);
+        });
+    });
+};
+
+// INSERT A DETALLES Idioma Principal e Idiomas con Niveles
+con.detIdiomPrinc = (cv_id) => {
+    return new Promise((resolve, reject ) => {
+        pool.query('INSERT INTO det_idioma_Usr_CV(fk_idioma,fk_usuario,fk_cv) values ((SELECT id_idioma FROM idiomas WHERE idioma = (select idioma_principal from cv where id_cva = ?)),11,?);', [cv_id,cv_id] , (err,results) => {
+            if(err){
+                return reject(err);
+            }
+            return resolve(results[0]);
+        });
+    });
+};
+
+con.detIdioma_Nivel1 = (cv_id) => {
+    return new Promise((resolve, reject ) => {
+        pool.query('INSERT INTO det_idioma_nivel_Usr_CV(fk_idioma,fk_nivel,fk_usuario,fk_cv) values ((SELECT id_idioma FROM idiomas WHERE idioma = (select idioma_1 from cv where id_cva = ?)),(SELECT id_nivel FROM nivel_idioma WHERE nivel = (select idioma_nivel_1 from cv where id_cva = ?)),11,?);', [cv_id,cv_id,cv_id] , (err,results) => {
+            if(err){
+                return reject(err);
+            }
+            return resolve(results[0]);
+        });
+    });
+};
+
+con.detIdioma_Nivel2 = (cv_id) => {
+    return new Promise((resolve, reject ) => {
+        pool.query('INSERT INTO det_idioma_nivel_Usr_CV(fk_idioma,fk_nivel,fk_usuario,fk_cv) values ((SELECT id_idioma FROM idiomas WHERE idioma = (select idioma_2 from cv where id_cva = ?)),(SELECT id_nivel FROM nivel_idioma WHERE nivel = (select idioma_nivel_2 from cv where id_cva = ?)),11,?);', [cv_id,cv_id,cv_id] , (err,results) => {
+            if(err){
+                return reject(err);
+            }
+            return resolve(results[0]);
+        });
+    });
+};
+
+con.detIdioma_Nivel3 = (cv_id) => {
+    return new Promise((resolve, reject ) => {
+        pool.query('INSERT INTO det_idioma_nivel_Usr_CV(fk_idioma,fk_nivel,fk_usuario,fk_cv) values ((SELECT id_idioma FROM idiomas WHERE idioma = (select idioma_3 from cv where id_cva = ?)),(SELECT id_nivel FROM nivel_idioma WHERE nivel = (select idioma_nivel_3 from cv where id_cva = ?)),11,?);', [cv_id,cv_id,cv_id] , (err,results) => {
+            if(err){
+                return reject(err);
+            }
+            return resolve(results[0]);
+        });
+    });
+};
+
+// INSERT A DETALLES Plantillas
+con.detPlantilla = (cv_id) => {
+    return new Promise((resolve, reject ) => {
+        pool.query('INSERT INTO det_plant_Usr_CV(FK_plantilla,fk_usuario,fk_cv) values ((SELECT id_plantilla FROM catalog_plantillas WHERE nombre_plantilla = (select plantilla from cv where id_cva = ?)),11,?);', [cv_id,cv_id] , (err,results) => {
+            if(err){
+                return reject(err);
+            }
+            return resolve(results[0]);
+        });
+    });
+};
+
+// INSERT A DETALLES Redes Sociales, ¡Quitar el catalogo y solo añadir lo que se encuentre dentro del cv?
+con.detRedSoc1 = (cv_id) => {
+    return new Promise((resolve, reject ) => {
+        pool.query('INSERT INTO det_redsoc_Usr_CV(FK_redsoc,fk_usuario,fk_cv) values ((SELECT Facebook from cv where id_cva = ?),11,?);', [cv_id,cv_id] , (err,results) => {
+            if(err){
+                return reject(err);
+            }
+            return resolve(results[0]);
+        });
+    });
+};
+
+con.detRedSoc2 = (cv_id) => {
+    return new Promise((resolve, reject ) => {
+        pool.query('INSERT INTO det_redsoc_Usr_CV(FK_redsoc,fk_usuario,fk_cv) values ((SELECT Twitter from cv where id_cva = ?),11,?);', [cv_id,cv_id] , (err,results) => {
+            if(err){
+                return reject(err);
+            }
+            return resolve(results[0]);
+        });
+    });
+};
+
+// INSERT A DETALLES Sectores
+con.detSector1 = (cv_id) => {
+    return new Promise((resolve, reject ) => {
+        pool.query('INSERT INTO det_sec_Usr_CV(FK_Sector,fk_usuario,fk_cv) values ((SELECT id_sec FROM sectores WHERE sector = (select sector_1 from cv where id_cva = ?)),11,?);', [cv_id,cv_id] , (err,results) => {
+            if(err){
+                return reject(err);
+            }
+            return resolve(results[0]);
+        });
+    });
+};
+
+con.detSector2 = (cv_id) => {
+    return new Promise((resolve, reject ) => {
+        pool.query('INSERT INTO det_sec_Usr_CV(FK_Sector,fk_usuario,fk_cv) values ((SELECT id_sec FROM sectores WHERE sector = (select sector_2 from cv where id_cva = ?)),11,?);', [cv_id,cv_id] , (err,results) => {
+            if(err){
+                return reject(err);
+            }
+            return resolve(results[0]);
+        });
+    });
+};
+
+con.detSector3 = (cv_id) => {
+    return new Promise((resolve, reject ) => {
+        pool.query('INSERT INTO det_sec_Usr_CV(FK_Sector,fk_usuario,fk_cv) values ((SELECT id_sec FROM sectores WHERE sector = (select sector_3 from cv where id_cva = ?)),11,?);', [cv_id,cv_id] , (err,results) => {
+            if(err){
+                return reject(err);
+            }
+            return resolve(results[0]);
+        });
+    });
+};
+
+// INSERT A DETALLES Software
+con.detSoftware1 = (cv_id) => {
+    return new Promise((resolve, reject ) => {
+        pool.query('INSERT INTO det_soft_Usr_CV(FK_software,fk_usuario,fk_cv) values ((SELECT id_sec FROM sectores WHERE sector = (select software1 from cv where id_cva = ?)),11,?);', [cv_id,cv_id] , (err,results) => {
+            if(err){
+                return reject(err);
+            }
+            return resolve(results[0]);
+        });
+    });
+};
+
+con.detSoftware2 = (cv_id) => {
+    return new Promise((resolve, reject ) => {
+        pool.query('INSERT INTO det_soft_Usr_CV(FK_software,fk_usuario,fk_cv) values ((SELECT id_sec FROM sectores WHERE sector = (select software2 from cv where id_cva = ?)),11,?);', [cv_id,cv_id] , (err,results) => {
+            if(err){
+                return reject(err);
+            }
+            return resolve(results[0]);
+        });
+    });
+};
+
+con.detSoftware3 = (cv_id) => {
+    return new Promise((resolve, reject ) => {
+        pool.query('INSERT INTO det_soft_Usr_CV(FK_software,fk_usuario,fk_cv) values ((SELECT id_sec FROM sectores WHERE sector = (select software3 from cv where id_cva = ?)),11,?);', [cv_id,cv_id] , (err,results) => {
+            if(err){
+                return reject(err);
+            }
+            return resolve(results[0]);
+        });
+    });
+};
+
+// INSERT A DETALLES CP
+con.detCP = (cv_id) => {
+    return new Promise((resolve, reject ) => {
+        pool.query('INSERT INTO det_cp_usr_cv(FK_CP,fk_usuario,fk_cv) values ((SELECT id_cp FROM catalog_cp WHERE Codigo_Postal = (select CP from cv where id_cva = ?)),11,?);', [cv_id,cv_id] , (err,results) => {
+            if(err){
+                return reject(err);
+            }
+            return resolve(results[0]);
+        });
+    });
+};
+
+// INSERT A DETALLES municipio
+con.detMunic = (cv_id) => {
+    return new Promise((resolve, reject ) => {
+        pool.query('INSERT INTO det_estado_usr_cv(FK_Estado,fk_usuario,fk_cv) values ((SELECT id_Estados FROM ent_fed WHERE ENTIDAD_FEDERATIVA = (select Estado from cv where id_cva = ?)),11,?);', [cv_id,cv_id] , (err,results) => {
+            if(err){
+                return reject(err);
+            }
+            return resolve(results[0]);
+        });
+    });
+};
+
+// INSERT A DETALLES Estados
+con.detEst_Fed = (cv_id) => {
+    return new Promise((resolve, reject ) => {
+        pool.query('INSERT INTO det_municipio_usr_cv(FK_Municipio,fk_usuario,fk_cv) values ((SELECT id_Municipio FROM municipio WHERE MUNICIPIO = (select Municipio from cv where id_cva = ?)),11,?);', [cv_id,cv_id] , (err,results) => {
+            if(err){
+                return reject(err);
+            }
+            return resolve(results[0]);
+        });
+    });
+};
 
 module.exports = con;
