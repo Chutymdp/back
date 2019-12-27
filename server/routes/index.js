@@ -14,30 +14,23 @@ router.get("/trabajos", async (req, res, next) => {
   }
 });
 
-//Página de prueba donde se valida que tienes un token - Funciona
-router.get("/me", verifyToken, async (req, res, next) => {
-  const user = await db.getEmail(req.user);
-  if (!user) {
-    return res.status(404).send("No user found");
-  }
-  res.json("me");
-  console.log("ewewew");
-});
+
 
 //LOGIN -
 router.post('/login', async (req, res, next) => {
-    let id = await db.getID(req.body.correo);
+    const todoUsuario = await db.getID(req.body.correo);
     let user = await db.login(req.body.correo, req.body.pass);
+    //console.log(todoUsuario, "Este es el bueno");
     
     if (!user) {
         return res.status(404).send("The email doesn't exist");
     } else {
-        
-        const token = jwt.sign({user: id}, 'mysecretkey',{ expiresIn: 60*60*24})     //Crea un token a partir del correo electrónico
+        const token = jwt.sign({user: todoUsuario}, 'mysecretkey',{ expiresIn: 60*60*24})     //Crea un token a partir del correo electrónico
         //res.json({ auth: true, token });//Muestra la autorización y si el token es correcto
-        console.log(token);
+        
         let tok = verifyToken(token)
-        res.send(token)
+        console.log("Token verificado",tok.Nombre,tok.id_usuario);
+        res.send(tok)
     }
 });
 
@@ -53,32 +46,30 @@ function verifyToken(token) {
     //     });
     // }
     const tokenVerificado = jwt.verify(token, 'mysecretkey');
-    console.log("Verificando" + tokenVerificado);
+    
     
     return tokenVerificado
-
 }
 
-
 //REGISTRO
-router.post("/registro", async (req, res, next) => {
+router.post("/registro", async (req, res) => {
   try {
     const { nombre, apellido_p, apellido_m, correo, pass } = req.body;
     // req.body.pass = await encryptPassword(req.body.pass);
-    console.log(req.body);
+    //console.log(req.body);
     //res.json({message: 'recibido'});
     let results = await db.registro(req.body);
-    const token = jwt.sign({ user: req.body.correo }, "mysecretkey", {
-      expiresIn: 60
-    });
+    //const token = jwt.sign({ user: req.body.correo }, "mysecretkey", {expiresIn: 60});
+    console.log(results);
+    
+    res.json(results)
 
-    //res.json({auth: true, token});
   } catch (e) {
     console.log(e);
-    res.sendStatus(500);
+    return res.status(500).send("El email ya existe");
+    
   }
 });
-
 
 
 //REGISTRO DE CURRICULUM
@@ -105,7 +96,7 @@ router.get("/CV/:id", async (req, res, next) => {
 
 router.post("/CP", async (req, res, next) => {
   try {
-    let results = await db.geo(req.body.params);
+    let results = await db.getCP(req.body.params);
     res.json(results);
   } catch (e) {
     console.log(e);
@@ -122,5 +113,4 @@ async function encryptPassword(pass) {
 async function validatePassword(pass, correo) {
   return bcrypt.compare(pass, db.getPassword(correo));
 }
-
 module.exports = router;
