@@ -137,6 +137,7 @@ async function validatePassword(pass, correo) {
   return bcrypt.compare(pass, db.getPassword(correo));
 }
 
+
 //Funcion que inserta a las tablas de detalles
 async function datosTablaDetalles (cv_id){
   try {
@@ -172,3 +173,4 @@ async function datosTablaDetalles (cv_id){
 }
 
 module.exports = router;
+

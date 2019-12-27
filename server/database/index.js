@@ -103,18 +103,6 @@ con.confirmID = (id) => {
     });
 };
    
-//CONSULTA DE REGISTRO DE USUARIOS SQL
-con.registro = (val) => {
-    return new Promise((resolve, reject ) => {
-        pool.query('INSERT INTO usuarios(Nombre,Apellido_Paterno,Apellido_Materno,Correo_electronico,Contraseña) values(?,?,?,?,?)', [val.nombre, val.apellido_p, val.apellido_m, val.correo, val.pass] , (err,results) => {
-            if(err){
-                return reject(err);
-            }
-            return resolve(results[0]);
-        });
-    });
-};
-
 //CONSULTA DE REGISTRO DE CURRICULUM SQL
 con.cv = (val) => {
     return new Promise((resolve, reject) => {
@@ -124,19 +112,6 @@ con.cv = (val) => {
             }
             return resolve(results.insertId);
         });     
-    });
-};
-
-
-//CONSULTA DE BUSQUEDA POR "ID" DE CURRICULUM SQL
-con.cv_select = (id) => {
-    return new Promise((resolve, reject) => {
-        pool.query('SELECT * FROM cv WHERE id_cva = ?', [id] , (err,results) => {
-            if(err){
-                return reject(err);
-            }
-            return resolve(results[0]);
-        });            
     });
 };
 
