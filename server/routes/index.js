@@ -86,6 +86,10 @@ router.post("/registroCV", async (req, res, next) => {
   try {
     let results = await db.cv(req.body);
     res.json(results);
+    //funcion a la tabla de detalles
+    datosTablaDetalles(results);
+    console.log(results);
+    //res.send(results);   
   } catch (e) {
     console.log(e);
     res.sendStatus(500);
@@ -96,6 +100,16 @@ router.post("/registroCV", async (req, res, next) => {
 router.get("/CV/:id", async (req, res, next) => {
   try {
     let results = await db.cv_select(req.params.id);
+    res.json(results);
+  } catch (e) {
+    console.log(e);
+    res.sendStatus(500);
+  }
+});
+
+router.get("/Det_Usr/:id", async (req, res, next) => {
+  try {
+    let results = await db.det_usr_cv(req.params.id);
     res.json(results);
   } catch (e) {
     console.log(e);
@@ -123,4 +137,40 @@ async function validatePassword(pass, correo) {
   return bcrypt.compare(pass, db.getPassword(correo));
 }
 
+
+//Funcion que inserta a las tablas de detalles
+async function datosTablaDetalles (cv_id){
+  try {
+    await db.detArea1(cv_id);
+    await db.detArea2(cv_id);
+    await db.detArea3(cv_id);
+    await db.detCurso1(cv_id);
+    await db.detCurso2(cv_id);
+    await db.detCurso3(cv_id);
+    await db.detHabilidad1(cv_id);
+    await db.detHabilidad2(cv_id);
+    await db.detHabilidad3(cv_id);
+    await db.detIdiomPrinc(cv_id);
+    await db.detIdioma_Nivel1(cv_id);
+    await db.detIdioma_Nivel2(cv_id);
+    await db.detIdioma_Nivel3(cv_id);
+    await db.detPlantilla(cv_id);
+    await db.detRedSoc1(cv_id);
+    await db.detRedSoc2(cv_id);
+    await db.detSector1(cv_id);
+    await db.detSector2(cv_id);
+    await db.detSector3(cv_id);
+    await db.detSoftware1(cv_id);
+    await db.detSoftware2(cv_id);
+    await db.detSoftware3(cv_id);
+    await db.detCP(cv_id);
+    await db.detEst_Fed(cv_id);
+    await db.detMunic(cv_id);
+  } catch (e) {
+    console.log(e);
+    res.sendStatus(500);
+  }
+}
+
 module.exports = router;
+
