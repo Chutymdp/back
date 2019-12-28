@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/precache-manifest.500aaaed1fbd06793e90e7764a3d9f5a.js"
+  "/precache-manifest.ffc2a718e971acb61c360823d70f9949.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "factorhumano"});

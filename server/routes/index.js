@@ -4,36 +4,68 @@ const router = express.Router();
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 
-router.get("/trabajos", async (req, res, next) => {
+
+router.post("/informacion_cv", async (req, res, next) => {
+  // console.log(req.body.userID," Este es el token en body");
+  //let tokenVerificado = verifyToken(req.body)
+
   try {
-    let results = await db.trabajos();
-    res.json(results);
+    let cvinfo = await db.getCVInfo(req.body.user.idChido,req.body.user.cvID)
+    res.send(cvInfo)
+    
+  } catch (e) {
+    console.log(e);
+    res.sendStatus(500);
+  }
+});
+router.post("/usuario_cvs", async (req, res, next) => {
+  console.log(req.body.userID," Este es el token en body");
+
+  //let tokenVerificado = verifyToken(req.body)
+  try {
+    let cvs = await db.getCVs(req.body.userID.idChido)
+    res.send(cvs)
+    console.log(cvs);
   } catch (e) {
     console.log(e);
     res.sendStatus(500);
   }
 });
 
-
-
-//LOGIN -
-router.post('/login', async (req, res, next) => {
-    const todoUsuario = await db.getID(req.body.correo);
+//LOGIN
+router.post('/login', async (req, res) => {
+    const usuarioQuery = await db.getID(req.body.correo);
     let user = await db.login(req.body.correo, req.body.pass);
     //console.log(todoUsuario, "Este es el bueno");
+    //console.log(id.id_usuario,"Este es el id");
     
     if (!user) {
+
         return res.status(404).send("The email doesn't exist");
+
     } else {
-        const token = jwt.sign({user: todoUsuario}, 'mysecretkey',{ expiresIn: 60*60*24})     //Crea un token a partir del correo electrónico
+        const token = jwt.sign({idUsuario:usuarioQuery.id_usuario}, 'mysecretkey',{ expiresIn: 60*60*24})     //Crea un token a partir del correo electrónico
         //res.json({ auth: true, token });//Muestra la autorización y si el token es correcto
-        
-        let tok = verifyToken(token)
-        console.log("Token verificado",tok.Nombre,tok.id_usuario);
-        res.send(tok)
+        //let tokenVerificado = verifyToken(token)
+        console.log(token);
+        res.send(token)
     }
 });
+//REGISTRO
+router.post("/registro", async (req, res) => {
+  try {
+    // req.body.pass = await encryptPassword(req.body.pass);
+    //console.log(req.body);
+    //res.json({message: 'recibido'});
+    let results = await db.registro(req.body);
+    //const token = jwt.sign({ user: req.body.correo }, "mysecretkey", {expiresIn: 60});
+    res.json(results)
 
+  } catch (e) {
+    console.log(e);
+    return res.status(500).send("El email ya existe");
+  }
+});
 
 //FUNCIÓN QUE VERIFICA EL TOKEN EN CADA RUTA
 function verifyToken(token) {
@@ -46,41 +78,19 @@ function verifyToken(token) {
     //     });
     // }
     const tokenVerificado = jwt.verify(token, 'mysecretkey');
-    
-    
     return tokenVerificado
 }
-
-//REGISTRO
-router.post("/registro", async (req, res) => {
-  try {
-    const { nombre, apellido_p, apellido_m, correo, pass } = req.body;
-    // req.body.pass = await encryptPassword(req.body.pass);
-    //console.log(req.body);
-    //res.json({message: 'recibido'});
-    let results = await db.registro(req.body);
-    //const token = jwt.sign({ user: req.body.correo }, "mysecretkey", {expiresIn: 60});
-    console.log(results);
-    
-    res.json(results)
-
-  } catch (e) {
-    console.log(e);
-    return res.status(500).send("El email ya existe");
-    
-  }
-});
-
 
 //REGISTRO DE CURRICULUM
 router.post("/registroCV", async (req, res, next) => {
   try {
     let results = await db.cv(req.body);
     res.json(results);
+    let results2 = await db.det_usr_cv(results);
     //funcion a la tabla de detalles
-    datosTablaDetalles(results);
+    //datosTablaDetalles(results);
     console.log(results);
-    //res.send(results);   
+    //res.send(results);
   } catch (e) {
     console.log(e);
     res.sendStatus(500);
@@ -88,17 +98,17 @@ router.post("/registroCV", async (req, res, next) => {
 });
 
 //SELECCIÓN DE CURRICULUM A TRAVÉS DEL ID
-router.get("/CV/:id", async (req, res, next) => {
-  try {
-    let results = await db.cv_select(req.params.id);
-    res.json(results);
-  } catch (e) {
-    console.log(e);
-    res.sendStatus(500);
-  }
-});
+// router.get("/CV/:id", async (req, res, next) => {
+//   try {
+//     let results = await db.cv_select(req.params.id);
+//     res.json(results);
+//   } catch (e) {
+//     console.log(e);
+//     res.sendStatus(500);
+//   }
+// });
 
-router.get("/Det_Usr/:id", async (req, res, next) => {
+router.post("/Det_Usr/:id", async (req, res, next) => {
   try {
     let results = await db.det_usr_cv(req.params.id);
     res.json(results);
@@ -109,6 +119,8 @@ router.get("/Det_Usr/:id", async (req, res, next) => {
 });
 
 router.post("/CP", async (req, res, next) => {
+  console.log(req.body.params,"CP");
+  
   try {
     let results = await db.getCP(req.body.params);
     res.json(results);
