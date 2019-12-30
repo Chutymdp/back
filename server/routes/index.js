@@ -83,6 +83,7 @@ function verifyToken(token) {
 
 //REGISTRO DE CURRICULUM
 router.post("/registroCV", async (req, res, next) => {
+  
   try {
     let results = await db.cv(req.body);
     res.json(results);
