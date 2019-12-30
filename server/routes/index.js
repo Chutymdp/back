@@ -18,12 +18,12 @@ router.post("/informacion_cv", async (req, res, next) => {
     res.sendStatus(500);
   }
 });
-router.post("/usuario_cvs", async (req, res, next) => {
-  console.log(req.body.userID," Este es el token en body");
-
+router.post("/listar_cvs", async (req, res, next) => {
+  console.log(req.body.userID.idChido," Este es el token en body");
+  let idUsuario = verifyToken(req.body.userID.idChido).idUsuario
   //let tokenVerificado = verifyToken(req.body)
   try {
-    let cvs = await db.getCVs(req.body.userID.idChido)
+    let cvs = await db.getCVs(idUsuario)
     res.send(cvs)
     console.log(cvs);
   } catch (e) {
@@ -44,7 +44,7 @@ router.post('/login', async (req, res) => {
         return res.status(404).send("The email doesn't exist");
 
     } else {
-        const token = jwt.sign({idUsuario:usuarioQuery.id_usuario}, 'mysecretkey',{ expiresIn: 60*60*24})     //Crea un token a partir del correo electrónico
+        const token = jwt.sign({idUsuario:usuarioQuery.id_usuario, nombreUsuario:usuarioQuery.Nombre}, 'mysecretkey',{ expiresIn: 60*60*24})     //Crea un token a partir del correo electrónico
         //res.json({ auth: true, token });//Muestra la autorización y si el token es correcto
         //let tokenVerificado = verifyToken(token)
         console.log(token);
@@ -84,13 +84,16 @@ function verifyToken(token) {
 //REGISTRO DE CURRICULUM
 router.post("/registroCV", async (req, res, next) => {
   
+  
+  req.body.FK_Usuario=verifyToken(req.body.FK_Usuario).idUsuario
+  console.log(req.body.FK_Usuario,"ID Usuario de token");
+  
   try {
     let results = await db.cv(req.body);
     res.json(results);
-    let results2 = await db.det_usr_cv(results);
+    //let results2 = await db.det_usr_cv(results);
     //funcion a la tabla de detalles
     //datosTablaDetalles(results);
-    console.log(results);
     //res.send(results);
   } catch (e) {
     console.log(e);
