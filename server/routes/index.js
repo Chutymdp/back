@@ -4,22 +4,21 @@ const router = express.Router();
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 
-
 router.post("/informacion_cv", async (req, res, next) => {
   // console.log(req.body.userID," Este es el token en body");
-  //let tokenVerificado = verifyToken(req.body)
-
+  let idUsuario = verifyToken(req.body.user.idChido).idUsuario
+  console.log("ID CV",req.body.user.cvID);  
   try {
-    let cvinfo = await db.getCVInfo(req.body.user.idChido,req.body.user.cvID)
+    let cvInfo = await db.getCVInfo(idUsuario,req.body.user.cvID)
     res.send(cvInfo)
-    
   } catch (e) {
     console.log(e);
     res.sendStatus(500);
   }
 });
+
 router.post("/listar_cvs", async (req, res, next) => {
-  console.log(req.body.userID.idChido," Este es el token en body");
+  
   let idUsuario = verifyToken(req.body.userID.idChido).idUsuario
   //let tokenVerificado = verifyToken(req.body)
   try {
