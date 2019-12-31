@@ -3,6 +3,7 @@ const session = require('express-session');
 const ApiRouter = require('./routes');
 const Cors = require('cors');
 const passport = require('passport');
+const path = require('path');
 
 const app = express();
 app.use(Cors());
@@ -11,6 +12,7 @@ app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Rutas
 app.use('/api', ApiRouter);
