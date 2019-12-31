@@ -34,7 +34,7 @@ router.post("/listar_cvs", async (req, res, next) => {
 //LOGIN
 router.post('/login', async (req, res) => {
     const usuarioQuery = await db.getID(req.body.correo);
-    let user = await db.login(req.body.correo, req.body.pass);
+    let user = await db.login(req.body.correo, validatePassword(req.body.pass, req.body.correo)); //Primero compara la contraseña normal con la encriptada y despues hace la consulta de login.
     //console.log(todoUsuario, "Este es el bueno");
     //console.log(id.id_usuario,"Este es el id");
     
@@ -43,7 +43,7 @@ router.post('/login', async (req, res) => {
         return res.status(404).send("The email doesn't exist");
 
     } else {
-        const token = jwt.sign({idUsuario:usuarioQuery.id_usuario, nombreUsuario:usuarioQuery.Nombre}, 'mysecretkey',{ expiresIn: 60*60*24})     //Crea un token a partir del correo electrónico
+        const token = jwt.sign({idUsuario:usuarioQuery.id_usuario, nombreUsuario:usuarioQuery.Nombre}, 'mysecretkey',{ expiresIn: 60*60*24})     //Crea un token a partir del id del usuario
         //res.json({ auth: true, token });//Muestra la autorización y si el token es correcto
         //let tokenVerificado = verifyToken(token)
         console.log(token);
@@ -53,12 +53,12 @@ router.post('/login', async (req, res) => {
 //REGISTRO
 router.post("/registro", async (req, res) => {
   try {
-    // req.body.pass = await encryptPassword(req.body.pass);
-    //console.log(req.body);
+    req.body.pass = await encryptPassword(req.body.pass); //Encripta la contraseña
+    console.log(req.body);
     //res.json({message: 'recibido'});
     let results = await db.registro(req.body);
     //const token = jwt.sign({ user: req.body.correo }, "mysecretkey", {expiresIn: 60});
-    res.json(results)
+    res.json(results);
 
   } catch (e) {
     console.log(e);
@@ -82,8 +82,6 @@ function verifyToken(token) {
 
 //REGISTRO DE CURRICULUM
 router.post("/registroCV", async (req, res, next) => {
-  
-  
   req.body.FK_Usuario=verifyToken(req.body.FK_Usuario).idUsuario
   console.log(req.body.FK_Usuario,"ID Usuario de token");
   
@@ -138,9 +136,9 @@ async function encryptPassword(pass) {
   const salt = await bcrypt.genSalt(10);
   return bcrypt.hash(pass, salt);
 }
-//FUNCIÓN QUE VALIDA LA CONTRASEÑA - NO FUNCIONA
+//FUNCIÓN QUE VALIDA LA CONTRASEÑA - FUNCIONA
 async function validatePassword(pass, correo) {
-  return bcrypt.compare(pass, db.getPassword(correo));
+  return bcrypt.compare(pass, db.getID(correo));
 }
 
 
