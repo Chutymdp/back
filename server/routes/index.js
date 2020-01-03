@@ -43,7 +43,7 @@ router.post('/login', async (req, res) => {
         return res.status(404).send("The email doesn't exist");
 
     } else {
-        const token = jwt.sign({idUsuario:usuarioQuery.id_usuario, nombreUsuario:usuarioQuery.Nombre}, 'mysecretkey',{ expiresIn: 60*60*24})     //Crea un token a partir del id del usuario
+        const token = jwt.sign({idUsuario:usuarioQuery.id_usuario}, 'mysecretkey',{ expiresIn: 60*60*24})     //Crea un token a partir del id del usuario
         //res.json({ auth: true, token });//Muestra la autorización y si el token es correcto
         //let tokenVerificado = verifyToken(token)
         console.log(token);
@@ -57,8 +57,8 @@ router.post("/registro", async (req, res) => {
     console.log(req.body);
     //res.json({message: 'recibido'});
     let results = await db.registro(req.body);
-    //const token = jwt.sign({ user: req.body.correo }, "mysecretkey", {expiresIn: 60});
-    res.json(results);
+    const token = jwt.sign({idUsuario:results}, 'mysecretkey',{ expiresIn: 60*60*24}) 
+    res.send(token);
 
   } catch (e) {
     console.log(e);
