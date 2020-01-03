@@ -50,7 +50,7 @@ con.getID = (Correo) => {
 
 con.getCVInfo = (idUsuario, idCV) => {
     return new Promise((resolve, reject ) => {
-        pool.query('SELECT * FROM cv WHERE fk_usuario = ? & plantilla = ?', [idUsuario],[idCV], (err,results) => {
+        pool.query('SELECT * FROM cv WHERE fk_usuario = ? and ID_CVA = ?', [idUsuario,idCV], (err,results) => {
             if(err){
                 return reject(err);
             }
@@ -58,6 +58,7 @@ con.getCVInfo = (idUsuario, idCV) => {
         });
     });
 };
+
 //CVS de usuarios 
 con.getCVs = (idUsuario) => {
     return new Promise((resolve, reject ) => {
@@ -90,7 +91,8 @@ con.registro = (val) => {
             if(err){
                 return reject(err);
             }
-            return resolve(results[0]);
+            
+            return resolve(results.insertId);
         });
     });
 };

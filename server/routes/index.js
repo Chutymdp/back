@@ -4,22 +4,21 @@ const router = express.Router();
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 
-
 router.post("/informacion_cv", async (req, res, next) => {
   // console.log(req.body.userID," Este es el token en body");
-  //let tokenVerificado = verifyToken(req.body)
-
+  let idUsuario = verifyToken(req.body.user.idChido).idUsuario
+  console.log("ID CV",req.body.user.cvID);  
   try {
-    let cvinfo = await db.getCVInfo(req.body.user.idChido,req.body.user.cvID)
+    let cvInfo = await db.getCVInfo(idUsuario,req.body.user.cvID)
     res.send(cvInfo)
-    
   } catch (e) {
     console.log(e);
     res.sendStatus(500);
   }
 });
+
 router.post("/listar_cvs", async (req, res, next) => {
-  console.log(req.body.userID.idChido," Este es el token en body");
+  
   let idUsuario = verifyToken(req.body.userID.idChido).idUsuario
   //let tokenVerificado = verifyToken(req.body)
   try {
@@ -44,7 +43,7 @@ router.post('/login', async (req, res) => {
         return res.status(404).send("The email doesn't exist");
 
     } else {
-        const token = jwt.sign({idUsuario:usuarioQuery.id_usuario, nombreUsuario:usuarioQuery.Nombre}, 'mysecretkey',{ expiresIn: 60*60*24})     //Crea un token a partir del id del usuario
+        const token = jwt.sign({idUsuario:usuarioQuery.id_usuario}, 'mysecretkey',{ expiresIn: 60*60*24})     //Crea un token a partir del id del usuario
         //res.json({ auth: true, token });//Muestra la autorización y si el token es correcto
         //let tokenVerificado = verifyToken(token)
         console.log(token);
@@ -58,8 +57,8 @@ router.post("/registro", async (req, res) => {
     console.log(req.body);
     //res.json({message: 'recibido'});
     let results = await db.registro(req.body);
-    //const token = jwt.sign({ user: req.body.correo }, "mysecretkey", {expiresIn: 60});
-    res.json(results);
+    const token = jwt.sign({idUsuario:results}, 'mysecretkey',{ expiresIn: 60*60*24}) 
+    res.send(token);
 
   } catch (e) {
     console.log(e);
